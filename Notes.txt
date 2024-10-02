@@ -1,0 +1,63 @@
+Providers - A plugin that allows us to talk to specific set of APIs. 
+We go to Documentation page of Providers on Terraform so that we can all the API providers that Terrarform supports. 
+
+Terraform supports a whole bunch of plugins which are not necessarily all cloud related. 
+E.g. - DNS, Kubenetes, DigitalOcean etc. We have to make sure to download the necessary plugins to communicate with them using Terraform.
+
+Hard-coded credentials are not recommended in any Terraform configuration and risks secret leakage should this file ever be committed to a public version control system.
+When publishing the code to Github or similar platform, our security key will be stored there as well and that will be a security vulnerability. 
+
+When creating a new access key, we should download the key(.csv) file. 
+In case, we need our secret key, and we don't have the key file, we have to delete the current access key and create a new one. 
+
+To implement any AWS Services on Terraform, look for the code sample provided in the resources page of the documentation. 
+
+When naming our instances in Terraform, AWS will not be notified of this name. This name is only of the scope of TF. 
+
+terraform init : 
+    Looks for all the .tf extension files in our folder. 
+    Looks for all the providers in the configuration provided. 
+    It downloads the necessary plugins to interact with the provider APIs. 
+
+terraform plan: 
+    dry runs our code - to show all the changes it is going to perform like creating an instance or deleting an instance. 
+    recommended to run terraform plan to do a sanity check.
+    Totally Optional.
+    It will colour-code things depending on actions. 
+    Green + for creation. Red - for deletion. Orange ~ for modifying a pre-existing resource.
+
+terraform apply: 
+    to actually run our code in terraform.
+    terraform apply has similar working to terraform plan. The symbols are exactly the same. 
+    creating instances takes time depending on what kind of instance we're deploying. 
+
+terraform destroy: 
+    command to delete an already existing resource. 
+    Will destroy every terraform single resource that we have created in the existing file. 
+
+Creating a VPC using Terraform: 
+    we just need to provide a CIDR block. 
+    A CIDR block is a collection of IP addresses that share the same network prefix and number of bits.
+
+Referencing a Resource: 
+    Referencing a resource is pretty simple. We just use the attribute *id*. 
+    Eg: aws_vpc.id will help us get the id of our resource vpc after it is created in the same terraform program. 
+    being-referenced = resource.resource-name.id (referenced from)
+
+When creating a VPC, a by default VPC is created for every user. So, even when you're creating only 1 VPC, AWS VPC Console will have 2 VPCs. 
+The default VPC will create a whole bunch of subnets. The one corresponding to our own Subnet should be Only ONE. 
+So, always put a name-tag to identify your created resources when using terraform. 
+
+The order in which we write our code, does not matter in terraform. 
+We can define the subnet first and then define the vpc even when subnet is referencing the VPC, without it being declared in the code. 
+Terraform is smart enough to figure out what needs to be created first and it will create the resources 
+
+NOTE: If you want to approve manually everytime after you want to create/destroy something, just use --auto-approve after terraform apply/destroy. 
+
+Terraform Files:
+    .terraform folder : it is created whenever we install any plugins. It is going to install all the necessary directories for our code to run smoothly. 
+    terraform.tfstate : is represents all of the states for Terraform. It keeps a track of all the states of the resources created. 
+        For example: If we created a subnet and want to modify it, this file will keep the track of the states. 
+        Note: Never Mess With Terraform.tfstate file because it will hamper the overall functionality of terraform. 
+
+    
